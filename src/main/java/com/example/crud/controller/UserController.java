@@ -2,9 +2,11 @@ package com.example.crud.controller;
 
 import com.example.crud.dto.GetUserRequest;
 import com.example.crud.dto.UserDto;
+import com.example.crud.entity.User;
 import com.example.crud.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +29,14 @@ public class UserController {
             @RequestParam(name = "address", required = false) String address
 
     ) {
-        return ResponseEntity.ok(userService.searchUsers(new GetUserRequest(username, address)));
+        List<UserDto> users = userService.searchUsers(new GetUserRequest(username, address));
+
+        if (users.isEmpty()) {
+            throw new RuntimeException("No record users");
+        } else {
+            return ResponseEntity.ok(users);
+        }
+
     }
 
 }
